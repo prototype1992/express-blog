@@ -2,19 +2,29 @@
   "name": "expressjs-blog",
   "version": "1.0.0",
   "description": "Простой блог на JavaScript (ExpressJS)",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/prototype1992/expressjs-blog.git"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "expressjs"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/prototype1992/expressjs-blog/issues"
   },
-  "homepage": "https://github.com/prototype1992/expressjs-blog#readme"
+  "homepage": "https://github.com/prototype1992/expressjs-blog#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
 }
