@@ -15,11 +15,23 @@ const card = post => {
 };
 
 let posts = [];
+let modal = null;
 const BASE_URL = '/api/post';
 
 class PostApi {
     static fetch() {
         return fetch(BASE_URL, {method: 'get'}).then(response => response.json())
+    }
+
+    static create(post) {
+        return fetch(BASE_URL, {
+            method: 'post',
+            body: JSON.stringify(post),
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            }
+        }).then(response => response.json())
     }
 }
 
@@ -27,11 +39,37 @@ document.addEventListener('DOMContentLoaded', () => {
     PostApi.fetch()
         .then(response => {
             posts = response.concat();
-            setTimeout(() => {
-                renderPosts(posts)
-            }, 3000);
-        })
+            renderPosts(posts)
+        });
+
+    modal = M.Modal.init(document.querySelector('#createForm'));
+
+    document.querySelector('#createPost').addEventListener('click', onCreatePost);
 });
+
+function onCreatePost() {
+    let $title = document.querySelector('#title').value;
+    let $text = document.querySelector('#text').value;
+
+    if ($title && $text) {
+        const newPost = {
+            title: $title,
+            text: $text
+        };
+
+        PostApi.create(newPost).then(post => {
+            posts.push(post);
+            renderPosts(posts);
+        });
+
+        modal.close();
+
+        $title = '';
+        $text = '';
+
+        M.updateTextFields();
+    }
+}
 
 function renderPosts(posts = []) {
     const $posts = document.querySelector('#posts');

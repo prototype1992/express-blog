@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const path = require('path');
 
 const port = process.env.PORT || 5005;
@@ -9,6 +10,10 @@ const postRouter = require('./routes/post');
 const keys = require('./keys');
 
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use('/api/post', postRouter);
 app.use(express.static(clientPath));
 

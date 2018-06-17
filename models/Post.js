@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// создаем схему таблицы
 const postSchema = new Schema({
     title: {
         type: String,
