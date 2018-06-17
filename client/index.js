@@ -3,11 +3,11 @@ const card = post => {
     return `<div class="card z-depth-4">
         <div class="card-content ">
             <span class="card-title">${post.title}</span>
-            <p>${post.text}</p>
-            <small>${post.date}</small>
+            <p style="white-space: pre-line;">${post.text}</p>
+            <small>${new Date(post.date).toLocaleString()}</small>
         </div>
         <div class="card-action">
-            <button class="btn btn-small red">
+            <button class="btn btn-small red js-remove" data-id="${post._id}">
                 <i class="material-icons">delete</i>
             </button>
         </div>
@@ -20,7 +20,8 @@ const BASE_URL = '/api/post';
 
 class PostApi {
     static fetch() {
-        return fetch(BASE_URL, {method: 'get'}).then(response => response.json())
+        return fetch(BASE_URL, {method: 'get'})
+            .then(response => response.json())
     }
 
     static create(post) {
@@ -31,7 +32,15 @@ class PostApi {
                 'Accept': 'application/json',
                 'Content-type': 'application/json'
             }
-        }).then(response => response.json())
+        })
+            .then(response => response.json())
+    }
+
+    static remove(id) {
+        return fetch(`${BASE_URL}/${id}`, {
+            method: 'delete',
+        })
+            .then(response => response.json())
     }
 }
 
@@ -45,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal = M.Modal.init(document.querySelector('#createForm'));
 
     document.querySelector('#createPost').addEventListener('click', onCreatePost);
+
+    document.querySelector('#posts').addEventListener('click', onDeletePost);
 });
 
 function onCreatePost() {
@@ -62,12 +73,26 @@ function onCreatePost() {
             renderPosts(posts);
         });
 
-        modal.close();
-
         $title = '';
         $text = '';
 
-        M.updateTextFields();
+        modal.close();
+    }
+}
+
+function onDeletePost(event) {
+    if (event.target.classList.contains('js-remove')) {
+        const decision = confirm('Вы уверены что хотить удалить запись?');
+        if (decision) {
+            const id = event.target.getAttribute('data-id');
+
+            PostApi.remove(id)
+                .then(() => {
+                    const postIndex = posts.findIndex(item => item._id === id);
+                    posts.splice(postIndex, 1);
+                    renderPosts(posts);
+                })
+        }
     }
 }
 
